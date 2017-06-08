@@ -649,11 +649,14 @@ returned either before or after the modifications have taken place."
   The new-rdn has the form cn=foo or ou=foo. Using just foo is not sufficient.
   The delete-old-rdn boolean option indicates whether to delete the current
   RDN value from the target entry. The options map supports pre/post-read
-  and proxied-auth controls."
+  and proxied-auth controls. Superior-dn is used in cases where the entry will
+  be moved."
   ([connection dn new-rdn delete-old-rdn]
-    (modify-rdn connection dn new-rdn delete-old-rdn nil))
+    (modify-rdn connection dn new-rdn delete-old-rdn nil nil))
   ([connection dn new-rdn delete-old-rdn options]
-   (let [request (ModifyDNRequest. dn new-rdn delete-old-rdn)]
+   (modify-rdn connection dn new-rdn delete-old-rdn options nil))
+  ([connection dn new-rdn delete-old-rdn options superior-dn]
+   (let [request (ModifyDNRequest. dn new-rdn delete-old-rdn superior-dn)]
      (when options
        (add-request-controls request options))
      (ldap-result
